@@ -3,7 +3,7 @@
 * Author: Robodog81
 * Date: 06/03/2026
 * Version: 1
-* Purpose: Encode images to be sent over Meshtastic
+* Purpose: Encode and decode images for the meshtastic mesh
 **/
 
 console.log("Initiated\nWaiting for user input")
@@ -21,7 +21,8 @@ const SENDSIZE = 31
 window.onload=startCanvas
 
 function startCanvas(){
-	document.getElementById("helperText").innerHTML = "Upload an image"
+	console.log("Upload a " + SENDSIZE + "x" + SENDSIZE + " image or decode a recived string")
+	document.getElementById("helperText").innerHTML = "Upload a " + SENDSIZE + "x" + SENDSIZE + " image or decode a recived string"
 	const input = document.getElementById("imageInput")
 	const canvas = document.getElementById("myCanvas")
 	ctx = canvas.getContext("2d")
@@ -91,12 +92,21 @@ function encode(){ // Runs once on load
 		base10 = (base10 - (base10 % TARGETBASE)) / TARGETBASE
 	}
 	console.log(encoded)
+	
+	document.getElementById("helperText").innerHTML = "Click allow to copy the image to clipboard"
 	navigator.clipboard.writeText(encoded)
+		.then(() => {
+			console.log("Image code copied to your clipboard");
+			document.getElementById("helperText").innerHTML = "Image code copied to your clipboard"
+		})
+		.catch((err) => {
+			console.error("Error: Could not copy text", err);
+			document.getElementById("helperText").innerHTML = "Copy failed, refresh and try again"
+		});
 }
 
 function decode(){ // decode inputted text. triggered by a button in the HTML
 	let input = prompt("Please enter your encoded image:");
-	//console.log(encoderData.indexOf("!"))
 	
 	base10Out = 0n
 	let placeValue = 1n
@@ -134,11 +144,7 @@ function decode(){ // decode inputted text. triggered by a button in the HTML
 }
 
 
-
-
-
-
-function fill0Buf (bufIn, bufLength){
+function fill0Buf (bufIn, bufLength){ // not used currently
 	let buffer = ""
 	console.log(bufLength - Number(bufIn).length)
 	for (let i = 0; i < bufLength - Number(bufIn).length; i++){
