@@ -10,7 +10,7 @@ console.log("Initiated\nWaiting for user input")
 
 const WIDTH = 300
 const HEIGHT = 300
-const TARGETBASE = 56000n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
+const TARGETBASE = 55000n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
 const CHARAMT = 64 // the amount of characters to encode to (0 bufs up to this value)
 const SENDSIZE = 31
 
