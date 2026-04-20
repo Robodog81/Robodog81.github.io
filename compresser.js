@@ -1,9 +1,9 @@
 /**
 * Title: Meshtastic image encoder
-* Author: Neo Hunt
+* Author: Robodog81
 * Date: 06/03/2026
 * Version: 1
-* Purpose: Learn how to use logic to color the screen
+* Purpose: Encode images to be sent over Meshtastic
 **/
 
 console.log("Initiated\nWaiting for user input")
