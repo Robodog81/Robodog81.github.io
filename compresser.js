@@ -10,9 +10,9 @@ console.log("Initiated\nWaiting for user input")
 
 const WIDTH = 300
 const HEIGHT = 300
-const TARGETBASE = 55000n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
-const CHARAMT = 67 // the amount of characters to encode to (0 bufs up to this value)
-const SENDSIZE = 32
+const TARGETBASE = 129n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
+const CHARAMT = 200 // the amount of characters to encode to (0 bufs up to this value)
+const SENDSIZE = 37
 const MONOTH = 128 // the black and white conversion threshold
 
 
@@ -90,7 +90,7 @@ function encode(){ // Runs once on load
 	//base10 = 1212121234343434565656567777n
 	console.log(base10)
 	for (let i = 0; i < CHARAMT; i++){
-		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + 161) + encoded
+		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + 31) + encoded
 		base10 = (base10 - (base10 % TARGETBASE)) / TARGETBASE
 	}
 	console.log(encoded)
@@ -120,9 +120,9 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	base10Out = 0n
 	let placeValue = 1n
 	for (let i = input.length - 1; i > 0; i--){
-		base10Out += BigInt(input.charAt(i).codePointAt(0) - 161) * placeValue
+		base10Out += BigInt(input.charAt(i).codePointAt(0) - 31) * placeValue
 		placeValue *= TARGETBASE
-		console.log((input.charAt(i).codePointAt(0) - 161))
+		console.log((input.charAt(i).codePointAt(0) - 31))
 	}
 	console.log(base10Out)
 	
