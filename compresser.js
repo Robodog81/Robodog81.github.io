@@ -1,7 +1,7 @@
 /**
 * Title: Meshtastic image encoder
 * Author: Robodog81
-* Date: 06/03/2026
+* Date: 21/03/2026
 * Version: 1
 * Purpose: Encode and decode images for the meshtastic mesh
 **/
