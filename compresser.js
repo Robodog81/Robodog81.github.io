@@ -11,7 +11,7 @@ console.log("Initiated\nWaiting for user input")
 const WIDTH = 300
 const HEIGHT = 300
 const TARGETBASE = 55000n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
-const CHARAMT = 66 // the amount of characters to encode to (0 bufs up to this value)
+const CHARAMT = 67 // the amount of characters to encode to (0 bufs up to this value)
 const SENDSIZE = 32
 const MONOTH = 128 // the black and white conversion threshold
 
