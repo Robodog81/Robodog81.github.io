@@ -1,7 +1,7 @@
 /**
 * Title: Meshtastic image encoder
 * Author: Robodog81
-* Date: 06/03/2026
+* Date: 22/04/2026
 * Version: 1
 * Purpose: Encode and decode images for the meshtastic mesh
 **/
@@ -10,9 +10,9 @@ console.log("Initiated\nWaiting for user input")
 
 const WIDTH = 300
 const HEIGHT = 300
-const TARGETBASE = 129n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
+const TARGETBASE = 94n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
 const CHARAMT = 200 // the amount of characters to encode to (0 bufs up to this value)
-const SENDSIZE = 37
+const SENDSIZE = 36
 const MONOTH = 128 // the black and white conversion threshold
 
 
