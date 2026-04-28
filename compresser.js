@@ -10,10 +10,9 @@ console.log("Initiated\nWaiting for user input")
 
 const WIDTH = 300
 const HEIGHT = 300
-const TARGETBASE = 94n//11141104n - 10000n // what base to encode to (limited by amount of characters in encoderData)
+const TARGETBASE = 94n// what base to encode to (limited by amount of 2 byte characters in utf8)
 const CHARAMT = 199 // the amount of characters to encode to (0 bufs up to this value)
 const SENDSIZE = 36 // res of imag
-const MONOTH = 128 // the black and white conversion threshold
 
 
 //window.addEventListener('mousemove', mouseMoved)
@@ -124,6 +123,7 @@ function finishEncode(){ // runs once to encode the adjusted image
 		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + 31) + encoded
 		base10 = (base10 - (base10 % TARGETBASE)) / TARGETBASE
 	}
+	encoded = encoded + "r"
 	console.log(encoded)
 	
 	document.getElementById("helperText").innerHTML = "Click allow to copy the image to clipboard"
@@ -153,7 +153,7 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	
 	base10Out = 0n
 	let placeValue = 1n
-	for (let i = input.length - 1; i > 0; i--){
+	for (let i = input.length - 2; i > 0; i--){ // length - 2 bc it offsets one for the colour char and the other is needed
 		base10Out += BigInt(input.charAt(i).codePointAt(0) - 31) * placeValue
 		placeValue *= TARGETBASE
 		console.log((input.charAt(i).codePointAt(0) - 31))
