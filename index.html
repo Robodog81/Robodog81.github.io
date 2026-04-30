@@ -14,12 +14,15 @@ Your browser does not support the canvas element.
 </canvas>
 <h3 id = "helperText">This text will change as the program runs</h3>
 <input type="file" id="imageInput" accept="image/*">
-<br>
 <span id="THT">Conversion threshold: </span>
-<input type="range" min="0" max="255" value="128" id="threshold">
+<input type="range" min="1" max="254" value="128" id="threshold">
 <br>
+<span class="colour">Colours used:</span>
+<input class="colour" type="range" min="1" max="9" value="8" id="col1">
+<input class="colour" type="range" min="1" max="9" value="9" id="col2">
+<br class="colour">
 <button id="encodeButton" onclick="finishEncode()">Encode Image</button>
-<br><br>
+<br class="newLine"><br class="newLine">
 <button id="decodeButton" onclick="decode()">Decode Image</button>
 </body>
-</html> 
+</html>
