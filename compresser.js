@@ -13,6 +13,7 @@ const HEIGHT = 300
 const TARGETBASE = 94n// what base to encode to (limited by amount of 2 byte characters in utf8)
 const CHARAMT = 199 // the amount of characters to encode to (0 bufs up to this value)
 const SENDSIZE = 36 // res of imag
+const CHAROFFSET = 31 // the offset for printable characters
 
 const COLOUR1 = "rgb(255, 0, 0)"
 const COLOUR2 = "rgb(0, 255, 0)"
@@ -231,13 +232,12 @@ function finishEncode(){ // runs once to encode the adjusted image
 	base10 = BigInt("0b" + binaryImage) // convert the binary image to base 10
 	
 	encoded = ""
-	//base10 = BigInt(outStr)
 	for (let i = 0; i < CHARAMT; i++){
-		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + 31) + encoded
+		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + CHAROFFSET) + encoded
 		base10 = (base10 - (base10 % TARGETBASE)) / TARGETBASE
 	}
-	encoded = encoded + String.fromCharCode((inColNum2 - 1) * 9 + inColNum1 - 0) // add colour (1 - 81)
-	
+	encoded = encoded + String.fromCharCode(((inColNum2 - 1) * 9 + inColNum1) + CHAROFFSET) // add colour (1 - 81)
+		
 	document.getElementById("helperText").innerHTML = "Click allow to copy the image to clipboard"
 	navigator.clipboard.writeText(encoded)
 		.then(() => {
@@ -254,7 +254,6 @@ function finishEncode(){ // runs once to encode the adjusted image
 function decode(decoderInput){ // decode inputted text. triggered by a button in the HTML
 	if (decoderInput === undefined){ // check if the function has an argument passed in
 		input = prompt("Please enter your encoded image:");
-		//input = getClipboardText() // working on pasteless clipboard reading
 		document.getElementById("helperText").innerHTML = "Decoded" // preemptively say decoded
 	} else {
 		input = decoderInput
@@ -265,7 +264,7 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	base10Out = 0n
 	let placeValue = 1n
 	for (let i = input.length - 2; i > 0; i--){ // length - 2 bc it offsets one for the colour char and the other is needed
-		base10Out += BigInt(input.charAt(i).codePointAt(0) - 31) * placeValue
+		base10Out += BigInt(input.charAt(i).codePointAt(0) - CHAROFFSET) * placeValue
 		placeValue *= TARGETBASE
 	}
 
@@ -275,7 +274,7 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 		base10Out = (base10Out - (base10Out % 2n)) / 2n
 	}
 	
-	finalChar = input.charAt(199).codePointAt(0) // figure out colours using the final char in the code
+	finalChar = input.charAt(199).codePointAt(0) - CHAROFFSET // figure out colours using the final char in the code
 	colNum1 = ((finalChar - 1) % 9) + 1
 	colNum2 = Math.ceil(finalChar / 9)
 	
@@ -308,7 +307,7 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 			colourPrimary = COLOUR9
 			break
 		default:
-			console.log("Error: there seems to be no encoded colour")
+			console.error("Error: there seems to be no encoded colour in the first slot")
 	}
 	switch (colNum2){ // convert the number to a colour
 		case 1:
@@ -339,7 +338,7 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 			colourSecondary = COLOUR9
 			break
 		default:
-			console.log("Error: there seems to be no encoded colour in the second slot: " + col2)
+			console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
 	}
 	
 	console.log("decode")
