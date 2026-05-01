@@ -239,14 +239,14 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 		colourPrimary = COLOURS[8] //White
 		console.error("Error: there seems to be no encoded colour in the first slot")
 	} else {
-		colourPrimary = COLOURS[colNum1 - 1] //Convert the number to a colour
+		colourPrimary = COLOURS[colNum1] //Convert the number to a colour
 	}
 
 	if (colNum2>9){
 		colourSecondary = COLOURS[7] //Black
 		console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
 	} else {
-		colourSecondary = COLOURS[colNum2 - 1] //Convert the number to a colour
+		colourSecondary = COLOURS[colNum2] //Convert the number to a colour
 	}
 	
 	console.log("decode")
