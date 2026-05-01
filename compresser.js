@@ -120,18 +120,18 @@ function processMono(){ // runs in a loob for the user to adjust the threshold t
 	ctx.putImageData(scan, 0, 0)
 	
 	if (inColNum1>9){
-		colourPrimary = COLOURS[inColNum1 - 1]
-	} else {
 		colourPrimary = COLOURS[8] //White
 		console.error("Error: there seems to be no defined colour in the first slot")
+	} else {
+		colourPrimary = COLOURS[inColNum1 - 1]
 	}
 	colourPrimary = colourLegacy(colourPrimary)
 
 	if (inColNum2>9){
-		colourSecondary = COLOURS[inColNum2 - 1]
-	} else {
 		colourSecondary = COLOURS[7] //Black
 		console.error("Error: there seems to be no defined colour in the second slot: " + col2)
+	} else {
+		colourSecondary = COLOURS[inColNum2 - 1]
 	}
 	colourSecondary = colourLegacy(colourSecondary)
 	
@@ -236,17 +236,17 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	colNum2 = Math.ceil(finalChar / 9)
 	
 	if (colNum1>9){
-		colourPrimary = COLOURS[colNum1 - 1] //Convert the number to a colour
-	} else {
 		colourPrimary = COLOURS[8] //White
 		console.error("Error: there seems to be no encoded colour in the first slot")
+	} else {
+		colourPrimary = COLOURS[colNum1 - 1] //Convert the number to a colour
 	}
 
 	if (colNum2>9){
-		colourSecondary = COLOURS[colNum2 - 1] //Convert the number to a colour
-	} else {
 		colourSecondary = COLOURS[7] //Black
 		console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
+	} else {
+		colourSecondary = COLOURS[colNum2 - 1] //Convert the number to a colour
 	}
 	
 	console.log("decode")
