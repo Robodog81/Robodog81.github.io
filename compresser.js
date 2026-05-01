@@ -27,11 +27,11 @@ const COLOURS = [
 	[255, 255, 255],
 ]
 
-colourPrimary = "rgb(255, 255, 255)"
-colourSecondary = "rgb(0, 0, 0)"
+var colourPrimary = "rgb(255, 255, 255)"
+var colourSecondary = "rgb(0, 0, 0)"
 
-inColNum1 = 8// make global for cross function use
-inColNum2 = 9
+var inColNum1 = 7// make global for cross function use
+var inColNum2 = 8
 
 //window.addEventListener('mousemove', mouseMoved)
 
@@ -73,7 +73,7 @@ function startCanvas(){
 			URL.revokeObjectURL(img.src)
 			
 			console.log("Image uploaded\nImage is " + img.naturalWidth + " pixels\nStarting encoder")
-			imgSize = img.naturalWidth
+			let imgSize = img.naturalWidth
 			console.log(imgSize)
 			
 			ctx.drawImage(img, 0, 0, SENDSIZE, SENDSIZE)
@@ -106,8 +106,8 @@ function startEncode(){ // Runs once on load
 function processMono(){ // runs in a loob for the user to adjust the threshold to convert to mono
 	binaryImage = "" // clear the image data
 	const thresholdValue = document.getElementById("threshold").value
-	inColNum1 = Number(document.getElementById("col1").value)
-	inColNum2 = Number(document.getElementById("col2").value)
+	let inColNum2 = Number(document.getElementById("col2").value)
+	let inColNum1 = Number(document.getElementById("col1").value)
 	
 	for (let i = 0; i < scanReadOnly.length; i += 4){ // convert the image to mono
 		const luminance = 0.2126 * scanReadOnly[i] + 0.7152 * scanReadOnly[i + 1] + 0.0722 * scanReadOnly[i + 2]
@@ -147,14 +147,14 @@ function processMono(){ // runs in a loob for the user to adjust the threshold t
 	}
 	
 	// scale the image to fit the screen and do all of the prosesing (treshold and colour)
-	scale = 8.333//WIDTH / SENDSIZE //size of image
+	let scale = 8.333//WIDTH / SENDSIZE //size of image
 	const processedImage = ctx.createImageData(WIDTH, HEIGHT)
 	for (let y = 0; y < HEIGHT; y++){
 		for (let x = 0; x < WIDTH; x++){
-			oldX = Math.floor(x / scale)
-			oldY = Math.floor(y / scale)
-			oldIdX = (oldY * SENDSIZE + oldX) * 4
-			newIdX = (y * WIDTH + x) * 4
+			let oldX = Math.floor(x / scale)
+			let oldY = Math.floor(y / scale)
+			let oldIdX = (oldY * SENDSIZE + oldX) * 4
+			let newIdX = (y * WIDTH + x) * 4
 			
 			if (scan.data[oldIdX] == 0){ // if the red pixel is on (works since the image is already monochrome)
 				processedImage.data[newIdX] = colourPrimary.match(/\d+/g)[0] // finds the red green or blue valuse and adds them to the image buffer
@@ -186,9 +186,9 @@ function finishEncode(){ // runs once to encode the adjusted image
 
 	console.log("button press")
 	clearInterval(monoLoop) // stop the loop
-	base10 = BigInt("0b" + binaryImage) // convert the binary image to base 10
+	let base10 = BigInt("0b" + binaryImage) // convert the binary image to base 10
 	
-	encoded = ""
+	let encoded = ""
 	for (let i = 0; i < CHARAMT; i++){
 		encoded = String.fromCharCode(Number(base10 % TARGETBASE) + CHAROFFSET) + encoded
 		base10 = (base10 - (base10 % TARGETBASE)) / TARGETBASE
@@ -210,28 +210,28 @@ function finishEncode(){ // runs once to encode the adjusted image
 
 function decode(decoderInput){ // decode inputted text. triggered by a button in the HTML
 	if (decoderInput === undefined){ // check if the function has an argument passed in
-		input = prompt("Please enter your encoded image:");
+		var input = prompt("Please enter your encoded image:");
 		document.getElementById("helperText").innerHTML = "Decoded" // preemptively say decoded
 	} else {
-		input = decoderInput
+		var input = decoderInput
 		document.getElementById("helperText").innerHTML = "Image code copied to your clipboard. This is what the sent image will look like."
 	}
 	
 	
-	base10Out = 0n
+	let base10Out = 0n
 	let placeValue = 1n
 	for (let i = input.length - 2; i > 0; i--){ // length - 2 bc it offsets one for the colour char and the other is needed
 		base10Out += BigInt(input.charAt(i).codePointAt(0) - CHAROFFSET) * placeValue
 		placeValue *= TARGETBASE
 	}
 
-	binaryOut = ""
+	let binaryOut = ""
 	for (let i = 0; i < SENDSIZE * SENDSIZE ; i++){
 		binaryOut = Number(base10Out % 2n) + binaryOut
 		base10Out = (base10Out - (base10Out % 2n)) / 2n
 	}
 	
-	finalChar = input.charAt(199).codePointAt(0) - CHAROFFSET // figure out colours using the final char in the code
+	let finalChar = input.charAt(199).codePointAt(0) - CHAROFFSET // figure out colours using the final char in the code
 	colNum1 = ((finalChar - 1) % 9) + 1
 	colNum2 = Math.ceil(finalChar / 9)
 	
@@ -250,13 +250,13 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	}
 	
 	console.log("decode")
-	scale = WIDTH / SENDSIZE //size of image
+	let scale = WIDTH / SENDSIZE //size of image
 	const outputImage = ctx.createImageData(WIDTH, HEIGHT)
 	for (let y = 0; y < HEIGHT; y++){
 		for (let x = 0; x < WIDTH; x++){
-			fillValue = binaryOut.charAt(Math.floor(y / scale) * SENDSIZE + Math.floor(x / scale)) * 255
+			let fillValue = binaryOut.charAt(Math.floor(y / scale) * SENDSIZE + Math.floor(x / scale)) * 255
 			
-			newIdX = (y * WIDTH + x) * 4
+			let newIdX = (y * WIDTH + x) * 4
 			
 			if (fillValue == 0){
 				outputImage.data[newIdX] = colourPrimary[0] // finds the red green or blue valuse and adds them to the image buffer
