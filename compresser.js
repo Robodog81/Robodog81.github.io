@@ -15,15 +15,17 @@ const CHARAMT = 199 // the amount of characters to encode to (0 bufs up to this 
 const SENDSIZE = 36 // res of imag
 const CHAROFFSET = 31 // the offset for printable characters
 
-const COLOUR1 = "rgb(255, 0, 0)"
-const COLOUR2 = "rgb(0, 255, 0)"
-const COLOUR3 = "rgb(0, 0, 255)"
-const COLOUR4 = "rgb(255, 255, 0)"
-const COLOUR5 = "rgb(0, 255, 255)"
-const COLOUR6 = "rgb(255, 0, 255)"
-const COLOUR7 = "rgb(150, 75, 0)"
-const COLOUR8 = "rgb(0, 0, 0)"
-const COLOUR9 = "rgb(255, 255, 255)"
+const COLOURS = [
+	[255, 0, 0],
+	[0, 255, 0],
+	[0, 0, 255],
+	[255, 255, 0],
+	[0, 255, 255],
+	[255, 0, 255],
+	[150, 75, 0],
+	[0, 0, 0],
+	[255, 255, 255],
+]
 
 colourPrimary = "rgb(255, 255, 255)"
 colourSecondary = "rgb(0, 0, 0)"
@@ -35,6 +37,10 @@ inColNum2 = 9
 
 // Set up the canvas
 window.onload=startCanvas
+
+function colourLegacy(col){
+	return `rgb(${col[0]},${col[1]},${col[2]})`
+}
 
 function startCanvas(){
 	threshold.hidden = true
@@ -113,70 +119,21 @@ function processMono(){ // runs in a loob for the user to adjust the threshold t
 	}
 	ctx.putImageData(scan, 0, 0)
 	
-	switch (inColNum1){ // convert the number to a colour
-		case 1:
-			colourPrimary = COLOUR1
-			break
-		case 2:
-			colourPrimary = COLOUR2
-			break
-		case 3:
-			colourPrimary = COLOUR3
-			break
-		case 4:
-			colourPrimary = COLOUR4
-			break
-		case 5:
-			colourPrimary = COLOUR5
-			break
-		case 6:
-			colourPrimary = COLOUR6
-			break
-		case 7:
-			colourPrimary = COLOUR7
-			break
-		case 8:
-			colourPrimary = COLOUR8
-			break
-		case 9:
-			colourPrimary = COLOUR9
-			break
-		default:
-			colourPrimary = COLOUR9 // default to white
-			console.error("Error: there seems to be no defined colour in the first slot")
+	if (inColNum1>9){
+		colourPrimary = COLOURS[inColNum1 - 1]
+	} else {
+		colourPrimary = COLOURS[8] //White
+		console.error("Error: there seems to be no defined colour in the first slot")
 	}
-	switch (inColNum2){ // convert the number to a colour
-		case 1:
-			colourSecondary = COLOUR1
-			break
-		case 2:
-			colourSecondary = COLOUR2
-			break
-		case 3:
-			colourSecondary = COLOUR3
-			break
-		case 4:
-			colourSecondary = COLOUR4
-			break
-		case 5:
-			colourSecondary = COLOUR5
-			break
-		case 6:
-			colourSecondary = COLOUR6
-			break
-		case 7:
-			colourSecondary = COLOUR7
-			break
-		case 8:
-			colourSecondary = COLOUR8
-			break
-		case 9:
-			colourSecondary = COLOUR9
-			break
-		default:
-			colourPrimary = COLOUR8 // default to black
-			console.error("Error: there seems to be no defined colour in the second slot: " + col2)
+	colourPrimary = colourLegacy(colourPrimary)
+
+	if (inColNum2>9){
+		colourSecondary = COLOURS[inColNum2 - 1]
+	} else {
+		colourSecondary = COLOURS[7] //Black
+		console.error("Error: there seems to be no defined colour in the second slot: " + col2)
 	}
+	colourSecondary = colourLegacy(colourSecondary)
 	
 	if (colourPrimary == "rgb(255, 255, 255)"){ // change white slider thumbs to light gray
 		document.getElementById("col1").style.accentColor = "rgb(235, 235, 235)"
@@ -278,67 +235,18 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	colNum1 = ((finalChar - 1) % 9) + 1
 	colNum2 = Math.ceil(finalChar / 9)
 	
-	switch (colNum1){ // convert the number to a colour
-		case 1:
-			colourPrimary = COLOUR1
-			break
-		case 2:
-			colourPrimary = COLOUR2
-			break
-		case 3:
-			colourPrimary = COLOUR3
-			break
-		case 4:
-			colourPrimary = COLOUR4
-			break
-		case 5:
-			colourPrimary = COLOUR5
-			break
-		case 6:
-			colourPrimary = COLOUR6
-			break
-		case 7:
-			colourPrimary = COLOUR7
-			break
-		case 8:
-			colourPrimary = COLOUR8
-			break
-		case 9:
-			colourPrimary = COLOUR9
-			break
-		default:
-			console.error("Error: there seems to be no encoded colour in the first slot")
+	if (colNum1>9){
+		colourPrimary = COLOURS[colNum1 - 1] //Convert the number to a colour
+	} else {
+		colourPrimary = COLOURS[8] //White
+		console.error("Error: there seems to be no encoded colour in the first slot")
 	}
-	switch (colNum2){ // convert the number to a colour
-		case 1:
-			colourSecondary = COLOUR1
-			break
-		case 2:
-			colourSecondary = COLOUR2
-			break
-		case 3:
-			colourSecondary = COLOUR3
-			break
-		case 4:
-			colourSecondary = COLOUR4
-			break
-		case 5:
-			colourSecondary = COLOUR5
-			break
-		case 6:
-			colourSecondary = COLOUR6
-			break
-		case 7:
-			colourSecondary = COLOUR7
-			break
-		case 8:
-			colourSecondary = COLOUR8
-			break
-		case 9:
-			colourSecondary = COLOUR9
-			break
-		default:
-			console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
+
+	if (colNum2>9){
+		colourSecondary = COLOURS[colNum2 - 1] //Convert the number to a colour
+	} else {
+		colourSecondary = COLOURS[7] //Black
+		console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
 	}
 	
 	console.log("decode")
@@ -351,14 +259,14 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 			newIdX = (y * WIDTH + x) * 4
 			
 			if (fillValue == 0){
-				outputImage.data[newIdX] = colourPrimary.match(/\d+/g)[0] // finds the red green or blue valuse and adds them to the image buffer
-				outputImage.data[newIdX + 1] = colourPrimary.match(/\d+/g)[1]
-				outputImage.data[newIdX + 2] = colourPrimary.match(/\d+/g)[2]
+				outputImage.data[newIdX] = colourPrimary[0] // finds the red green or blue valuse and adds them to the image buffer
+				outputImage.data[newIdX + 1] = colourPrimary[1]
+				outputImage.data[newIdX + 2] = colourPrimary[2]
 				outputImage.data[newIdX + 3] = 255
 			} else {
-				outputImage.data[newIdX] = colourSecondary.match(/\d+/g)[0]
-				outputImage.data[newIdX + 1] = colourSecondary.match(/\d+/g)[1]
-				outputImage.data[newIdX + 2] = colourSecondary.match(/\d+/g)[2]
+				outputImage.data[newIdX] = colourSecondary[0]
+				outputImage.data[newIdX + 1] = colourSecondary[1]
+				outputImage.data[newIdX + 2] = colourSecondary[2]
 				outputImage.data[newIdX + 3] = 255
 			}
 		}
