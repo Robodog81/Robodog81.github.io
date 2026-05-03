@@ -1,7 +1,7 @@
 /**
 * Title: Meshtastic image encoder
 * Author: Robodog81
-* Date: 30/04/2026
+* Date: 03/05/2026
 * Version: 3 (colour)
 * Purpose: Encode and decode images for the meshtastic mesh
 **/
@@ -15,15 +15,17 @@ const CHARAMT = 199 // the amount of characters to encode to (0 bufs up to this 
 const SENDSIZE = 36 // res of imag
 const CHAROFFSET = 31 // the offset for printable characters
 
-const COLOUR1 = "rgb(255, 0, 0)"
-const COLOUR2 = "rgb(0, 255, 0)"
-const COLOUR3 = "rgb(0, 0, 255)"
-const COLOUR4 = "rgb(255, 255, 0)"
-const COLOUR5 = "rgb(0, 255, 255)"
-const COLOUR6 = "rgb(255, 0, 255)"
-const COLOUR7 = "rgb(150, 75, 0)"
-const COLOUR8 = "rgb(0, 0, 0)"
-const COLOUR9 = "rgb(255, 255, 255)"
+const COLOURDATA = [
+	[255, 0, 0],
+	[0, 255, 0],
+	[0, 0, 255],
+	[255, 255, 0],
+	[0, 255, 255],
+	[255, 0, 255],
+	[101, 67, 33],
+	[0, 0, 0],
+	[255, 255, 255],
+]
 
 colourPrimary = "rgb(255, 255, 255)"
 colourSecondary = "rgb(0, 0, 0)"
@@ -35,6 +37,10 @@ inColNum2 = 9
 
 // Set up the canvas
 window.onload=startCanvas
+
+function toRgb(inCol){
+	return `rgb(${inCol[0]},${inCol[1]},${inCol[2]})`
+}
 
 function startCanvas(){
 	threshold.hidden = true
@@ -68,7 +74,6 @@ function startCanvas(){
 			
 			console.log("Image uploaded\nImage is " + img.naturalWidth + " pixels\nStarting encoder")
 			imgSize = img.naturalWidth
-			console.log(imgSize)
 			
 			ctx.drawImage(img, 0, 0, SENDSIZE, SENDSIZE)
 			startEncode()
@@ -112,85 +117,24 @@ function processMono(){ // runs in a loob for the user to adjust the threshold t
 		binaryImage = binaryImage + (monoValue / 255)
 	}
 	ctx.putImageData(scan, 0, 0)
+
+	colourPrimary = COLOURDATA[inColNum1 - 1] // select the collour from the recived number
+	colourSecondary = COLOURDATA[inColNum2 - 1]
 	
-	switch (inColNum1){ // convert the number to a colour
-		case 1:
-			colourPrimary = COLOUR1
-			break
-		case 2:
-			colourPrimary = COLOUR2
-			break
-		case 3:
-			colourPrimary = COLOUR3
-			break
-		case 4:
-			colourPrimary = COLOUR4
-			break
-		case 5:
-			colourPrimary = COLOUR5
-			break
-		case 6:
-			colourPrimary = COLOUR6
-			break
-		case 7:
-			colourPrimary = COLOUR7
-			break
-		case 8:
-			colourPrimary = COLOUR8
-			break
-		case 9:
-			colourPrimary = COLOUR9
-			break
-		default:
-			colourPrimary = COLOUR9 // default to white
-			console.error("Error: there seems to be no defined colour in the first slot")
-	}
-	switch (inColNum2){ // convert the number to a colour
-		case 1:
-			colourSecondary = COLOUR1
-			break
-		case 2:
-			colourSecondary = COLOUR2
-			break
-		case 3:
-			colourSecondary = COLOUR3
-			break
-		case 4:
-			colourSecondary = COLOUR4
-			break
-		case 5:
-			colourSecondary = COLOUR5
-			break
-		case 6:
-			colourSecondary = COLOUR6
-			break
-		case 7:
-			colourSecondary = COLOUR7
-			break
-		case 8:
-			colourSecondary = COLOUR8
-			break
-		case 9:
-			colourSecondary = COLOUR9
-			break
-		default:
-			colourPrimary = COLOUR8 // default to black
-			console.error("Error: there seems to be no defined colour in the second slot: " + col2)
-	}
-	
-	if (colourPrimary == "rgb(255, 255, 255)"){ // change white slider thumbs to light gray
+	//accent the sliders to the selected colours
+	if (toRgb(colourPrimary) == "rgb(255,255,255)"){ // change white slider thumbs to light gray
 		document.getElementById("col1").style.accentColor = "rgb(235, 235, 235)"
 	} else { 
-		document.getElementById("col1").style.accentColor = colourPrimary
+		document.getElementById("col1").style.accentColor = toRgb(colourPrimary)
 	}
-	if (colourSecondary == "rgb(255, 255, 255)"){
+	if (toRgb(colourSecondary) == "rgb(255,255,255)"){
 		document.getElementById("col2").style.accentColor = "rgb(235, 235, 235)"
 	} else { 
-		document.getElementById("col2").style.accentColor = colourSecondary
+		document.getElementById("col2").style.accentColor = toRgb(colourSecondary)
 	}
 	
 	// scale the image to fit the screen and do all of the prosesing (treshold and colour)
-	scale = 8.333//WIDTH / SENDSIZE //size of image
+	scale = WIDTH / SENDSIZE //size of image
 	const processedImage = ctx.createImageData(WIDTH, HEIGHT)
 	for (let y = 0; y < HEIGHT; y++){
 		for (let x = 0; x < WIDTH; x++){
@@ -200,14 +144,14 @@ function processMono(){ // runs in a loob for the user to adjust the threshold t
 			newIdX = (y * WIDTH + x) * 4
 			
 			if (scan.data[oldIdX] == 0){ // if the red pixel is on (works since the image is already monochrome)
-				processedImage.data[newIdX] = colourPrimary.match(/\d+/g)[0] // finds the red green or blue valuse and adds them to the image buffer
-				processedImage.data[newIdX + 1] = colourPrimary.match(/\d+/g)[1]
-				processedImage.data[newIdX + 2] = colourPrimary.match(/\d+/g)[2]
+				processedImage.data[newIdX] = colourPrimary[0] // finds the red green or blue valuse and adds them to the image buffer
+				processedImage.data[newIdX + 1] = colourPrimary[1]
+				processedImage.data[newIdX + 2] = colourPrimary[2]
 				processedImage.data[newIdX + 3] = 255
 			} else {
-				processedImage.data[newIdX] = colourSecondary.match(/\d+/g)[0]
-				processedImage.data[newIdX + 1] = colourSecondary.match(/\d+/g)[1]
-				processedImage.data[newIdX + 2] = colourSecondary.match(/\d+/g)[2]
+				processedImage.data[newIdX] = colourSecondary[0]
+				processedImage.data[newIdX + 1] = colourSecondary[1]
+				processedImage.data[newIdX + 2] = colourSecondary[2]
 				processedImage.data[newIdX + 3] = 255
 			}
 		}
@@ -278,68 +222,8 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	colNum1 = ((finalChar - 1) % 9) + 1
 	colNum2 = Math.ceil(finalChar / 9)
 	
-	switch (colNum1){ // convert the number to a colour
-		case 1:
-			colourPrimary = COLOUR1
-			break
-		case 2:
-			colourPrimary = COLOUR2
-			break
-		case 3:
-			colourPrimary = COLOUR3
-			break
-		case 4:
-			colourPrimary = COLOUR4
-			break
-		case 5:
-			colourPrimary = COLOUR5
-			break
-		case 6:
-			colourPrimary = COLOUR6
-			break
-		case 7:
-			colourPrimary = COLOUR7
-			break
-		case 8:
-			colourPrimary = COLOUR8
-			break
-		case 9:
-			colourPrimary = COLOUR9
-			break
-		default:
-			console.error("Error: there seems to be no encoded colour in the first slot")
-	}
-	switch (colNum2){ // convert the number to a colour
-		case 1:
-			colourSecondary = COLOUR1
-			break
-		case 2:
-			colourSecondary = COLOUR2
-			break
-		case 3:
-			colourSecondary = COLOUR3
-			break
-		case 4:
-			colourSecondary = COLOUR4
-			break
-		case 5:
-			colourSecondary = COLOUR5
-			break
-		case 6:
-			colourSecondary = COLOUR6
-			break
-		case 7:
-			colourSecondary = COLOUR7
-			break
-		case 8:
-			colourSecondary = COLOUR8
-			break
-		case 9:
-			colourSecondary = COLOUR9
-			break
-		default:
-			console.error("Error: there seems to be no encoded colour in the second slot: " + col2)
-	}
+	colourPrimary = COLOURDATA[inColNum1 - 1] // select the collour from the recived number
+	colourSecondary = COLOURDATA[inColNum2 - 1]
 	
 	console.log("decode")
 	scale = WIDTH / SENDSIZE //size of image
@@ -351,18 +235,18 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 			newIdX = (y * WIDTH + x) * 4
 			
 			if (fillValue == 0){
-				outputImage.data[newIdX] = colourPrimary.match(/\d+/g)[0] // finds the red green or blue valuse and adds them to the image buffer
-				outputImage.data[newIdX + 1] = colourPrimary.match(/\d+/g)[1]
-				outputImage.data[newIdX + 2] = colourPrimary.match(/\d+/g)[2]
+				outputImage.data[newIdX] = colourPrimary[0] // finds the red green or blue values and adds them to the image buffer
+				outputImage.data[newIdX + 1] = colourPrimary[1]
+				outputImage.data[newIdX + 2] = colourPrimary[2]
 				outputImage.data[newIdX + 3] = 255
 			} else {
-				outputImage.data[newIdX] = colourSecondary.match(/\d+/g)[0]
-				outputImage.data[newIdX + 1] = colourSecondary.match(/\d+/g)[1]
-				outputImage.data[newIdX + 2] = colourSecondary.match(/\d+/g)[2]
+				outputImage.data[newIdX] = colourSecondary[0]
+				outputImage.data[newIdX + 1] = colourSecondary[1]
+				outputImage.data[newIdX + 2] = colourSecondary[2]
 				outputImage.data[newIdX + 3] = 255
 			}
 		}
 	}
-	console.log("put")
+	console.log("Finished")
 	ctx.putImageData(outputImage, 0, 0)
 }
