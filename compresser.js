@@ -222,8 +222,8 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	colNum1 = ((finalChar - 1) % 9) + 1
 	colNum2 = Math.ceil(finalChar / 9)
 	
-	colourPrimary = COLOURDATA[inColNum1 - 1] // select the collour from the recived number
-	colourSecondary = COLOURDATA[inColNum2 - 1]
+	colourPrimary = COLOURDATA[ColNum1 - 1] // select the collour from the recived number
+	colourSecondary = COLOURDATA[ColNum2 - 1]
 	
 	console.log("decode")
 	scale = WIDTH / SENDSIZE //size of image
