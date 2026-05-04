@@ -1,7 +1,7 @@
 /**
 * Title: Meshtastic image encoder
 * Author: Robodog81
-* Date: 03/05/2026
+* Date: 05/05/2026
 * Version: 3 (colour)
 * Purpose: Encode and decode images for the meshtastic mesh
 **/
@@ -25,7 +25,7 @@ const COLOURDATA = [
 	[101, 67, 33],
 	[0, 0, 0],
 	[255, 255, 255],
-]
+]	
 
 colourPrimary = "rgb(255, 255, 255)"
 colourSecondary = "rgb(0, 0, 0)"
@@ -58,7 +58,7 @@ function startCanvas(){
 	document.getElementById("helperText").innerHTML = "Upload an image, it will automatically be scalled " + SENDSIZE + "x" + SENDSIZE
 	const input = document.getElementById("imageInput")
 	const canvas = document.getElementById("myCanvas")
-	ctx = canvas.getContext("2d")
+	ctx = canvas.getContext("2d", {willReadFrequently: true })
 		
 	input.addEventListener('change', (e) => { // get the image and place it on the canvas
 		console.log("Change detected")
@@ -225,7 +225,6 @@ function decode(decoderInput){ // decode inputted text. triggered by a button in
 	colourPrimary = COLOURDATA[colNum1 - 1] // select the collour from the recived number
 	colourSecondary = COLOURDATA[colNum2 - 1]
 	
-	console.log("decode")
 	scale = WIDTH / SENDSIZE //size of image
 	const outputImage = ctx.createImageData(WIDTH, HEIGHT)
 	for (let y = 0; y < HEIGHT; y++){
